@@ -1,4 +1,4 @@
-package testGUI;
+package rac;
 
 public class Controller {
     public void moveUp() {
