@@ -1,8 +1,11 @@
 package game;
 
 
-import javafx.scene.Node;
+import javafx.scene.image.Image;
 
-public class Player extends Node {
+import java.io.File;
+
+public class Player {
+
 
 }
