@@ -5,7 +5,6 @@ import javafx.scene.image.ImageView;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 import java.io.File;
 
 public class Sprite {
@@ -49,6 +48,9 @@ public class Sprite {
     public static ImageView player_sprite_73 = Sprite.getSprite("player_sprite_73");
 
     //
+    public static ImageView player_tile_50 = Sprite.getSprite("player_tile_50");
+    public static ImageView player_tile_60 = Sprite.getSprite("player_tile_60");
+    public static ImageView player_tile_70 = Sprite.getSprite("player_tile_70");
 
     public static void cropImagePlayer() {
         try {
@@ -69,8 +71,13 @@ public class Sprite {
     public static void cropImageWall() {
         try {
             BufferedImage bufferedImage = ImageIO.read(new File("src/main/resources/classic.png"));
-            for(double i=0; i<7; i++) {
-                BufferedImage buff = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+            for(int i=0; i<12; i++) {
+                for(int j=0; j<16; j++) {
+                    BufferedImage buff = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+                    buff.getGraphics().drawImage(bufferedImage, 0, 0 , 16, 16, j*16, i*16, (j+1)*16, (i+1)*16,null);
+                    String str = "src/main/resources/game_img/player_tile_" + j + i + ".png";
+                    ImageIO.write(buff, "png", new File(str));
+                }
             }
         }catch (Exception e) {
 

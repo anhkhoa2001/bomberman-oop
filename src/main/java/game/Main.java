@@ -7,13 +7,22 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
+import java.util.Map.Entry;
+
 
 public class Main extends Application {
     private boolean right, left, top, bottom;
@@ -21,48 +30,54 @@ public class Main extends Application {
     private double speed = 2;
     private double timeLine = 100;
 
-    private final double width = 1600, height = 720;
+    private final double width = 1280, height = 640;
 
-    private final Pane root = new Pane();
-    private final Pane entityRoot = new Pane();
+    private final AnchorPane root = new AnchorPane();
+    private final AnchorPane entityRoot = new AnchorPane();
+
+    private ArrayList<Group> arrayList = new ArrayList<>();
 
     private Group player;
     private Timeline t = new Timeline();
 
+    public Node createEntity(double x, double y, ImageView imageView) {
+        Rectangle r = new Rectangle();
+        return r;
+    }
+
     public void createMap() {
         Rectangle bg = new Rectangle(width, height);
 
-        for(double i=0; i<20; i++) {
-            if(i%2==0) {
-                Rectangle r = new Rectangle(i*64, 200, 64, 64);
-                r.setFill(Color.GRAY);
-                entityRoot.getChildren().addAll(r);
-            }
-            else {
-                Rectangle r = new Rectangle(i*64, 100, 64, 64);
-                r.setFill(Color.GREEN);
-                entityRoot.getChildren().addAll(r);
+        double levelWidth = Level.level1[0].length() * 64;
+
+        for(int i=0; i<Level.level1.length; i++) {
+            for(int j=0; j<Level.level1[i].length(); j++) {
+                switch (Level.level1[i].charAt(j)) {
+                    case '#':
+
+                        break;
+                }
             }
         }
-
+        System.out.println(arrayList.size());
         player = new Group(Sprite.player_sprite_02);
-        player.setTranslateX(0);
-        player.setTranslateY(0);
+        player.setTranslateX(64);
+        player.setTranslateY(64);
 
         player.translateXProperty().addListener((observableValue, number, t1) -> {
             int offset = t1.intValue();
 
-            if(offset > width/2 && offset < ((20*64) - width/2)) {
+            if(offset > width/2 && offset < (levelWidth - width/2)) {
                 entityRoot.setLayoutX(-(offset-width/2));
             }
         });
-
-        entityRoot.getChildren().addAll(player);
+        entityRoot.getChildren().add(player);
         root.getChildren().addAll(bg, entityRoot);
     }
 
     public void render() {
         Sprite.cropImagePlayer();
+        Sprite.cropImageWall();
         createMap();
     }
 
