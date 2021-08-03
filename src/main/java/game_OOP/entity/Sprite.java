@@ -16,13 +16,14 @@ public class Sprite {
 
     protected Image drawImage;
 
-    protected int directionLEFT = 0;
-    protected int directionRIGHT = 1;
-    protected int directionBOTTOM = 2;
-    protected int directionTOP = 3;
+    public static int directionLEFT = 0;
+    public static int directionRIGHT = 1;
+    public static int directionBOTTOM = 2;
+    public static int directionTOP = 3;
+
+    public static final double size = 48;
 
     public static double speed;
-
 
     public Sprite(double width, double height, double widthX, double heightY) {
         this.width = width;

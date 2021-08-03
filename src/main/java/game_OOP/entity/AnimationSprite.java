@@ -12,7 +12,7 @@ public class AnimationSprite extends Sprite {
 
     public AnimationSprite(double width, double height, double widthX, double heightY) {
         super(width, height, widthX, heightY);
-        speed = 8;
+        speed = 4;
         countSprite = 0;
         countChange = 0;
     }
