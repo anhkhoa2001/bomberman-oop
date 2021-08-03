@@ -1,5 +1,6 @@
-package game_OOP.entity;
+package game_OOP.entity.tile;
 
+import game_OOP.entity.Sprite;
 import javafx.scene.image.Image;
 
 import java.io.File;
@@ -17,6 +18,7 @@ public class Grass extends Sprite {
 
         spriteX = 97;
         spriteY = 0;
+
         try {
             File file = new File(Wall.urlEntity);
             drawImage = new Image(file.toURI().toString());

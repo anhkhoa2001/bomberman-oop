@@ -76,7 +76,6 @@ public class Main extends Application {
     }
 
     public void render() {
-        Sprite.cropImagePlayer();
         Sprite.cropImageWall();
         createMap();
     }

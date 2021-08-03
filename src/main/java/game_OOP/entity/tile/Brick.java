@@ -1,5 +1,7 @@
-package game_OOP.entity;
+package game_OOP.entity.tile;
 
+import game_OOP.entity.AnimationSprite;
+import game_OOP.entity.Sprite;
 import javafx.scene.image.Image;
 
 import java.io.File;

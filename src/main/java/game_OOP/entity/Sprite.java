@@ -37,6 +37,10 @@ public class Sprite {
         this.y = y;
     }
 
+    public void setDrawImage(Image drawImage) {
+        this.drawImage = drawImage;
+    }
+
     public void setX(double x) {
         this.x = x;
     }

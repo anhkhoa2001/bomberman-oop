@@ -1,11 +1,12 @@
-package game_OOP.entity;
+package game_OOP.entity.tile;
 
+import game_OOP.entity.Sprite;
 import javafx.scene.image.Image;
 
 import java.io.File;
 
 public class Wall extends Sprite {
-    protected static final String urlEntity = "src/main/resources/classic.png";
+    protected static final String urlEntity = "src/main/resources/img/classic.png";
 
     private static final double widthWall = 16;
     private static final double heightWall = 16;

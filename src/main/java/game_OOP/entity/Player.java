@@ -1,5 +1,7 @@
 package game_OOP.entity;
 
+import game_OOP.entity.tile.Brick;
+import game_OOP.entity.tile.Wall;
 import javafx.scene.image.Image;
 
 import java.io.File;
@@ -11,13 +13,14 @@ public class Player extends AnimationSprite {
     private static final double player_height = 80;
     private static final double player_heightY = 64;
 
-    private final String urlPlayer = "src/main/resources/img/sprite1.png";
+    private final String urlPlayer = "src/main/resources/img/bomber.png";
 
     public Player(double x, double y) {
         super(player_width, player_height, player_widthX, player_heightY);
 
         this.x = x;
         this.y = y;
+
         try {
             File file = new File(urlPlayer);
             drawImage = new Image(file.toURI().toString());

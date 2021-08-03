@@ -1,13 +1,13 @@
 package game_OOP.entity;
 
 public class AnimationSprite extends Sprite {
-    public final int countDirection = 4;
+    public final int countDirection = 5;
 
     public double[][] coordinatesX = new double[countDirection][];
     public double[][] coordinatesY = new double[countDirection][];
 
-    private int countSprite;
-    private int countChange;
+    protected int countSprite;
+    protected int countChange;
 
 
     public AnimationSprite(double width, double height, double widthX, double heightY) {

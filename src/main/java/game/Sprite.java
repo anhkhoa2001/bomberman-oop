@@ -52,21 +52,6 @@ public class Sprite {
     public static ImageView player_tile_60 = Sprite.getSprite("player_tile_60");
     public static ImageView player_tile_70 = Sprite.getSprite("player_tile_70");
 
-    public static void cropImagePlayer() {
-        try {
-            BufferedImage bufferedImage = ImageIO.read(new File("src/main/resources/game_img/bomberman2.png"));
-            for(int i=0; i<4; i++) {
-                for(int j=0; j<7; j++) {
-                    BufferedImage buffImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-                    buffImg.getGraphics().drawImage(bufferedImage, 0, 0, width, height, j*width, i*height, width*(j+1), height*(i+1), null);
-                    String str = "src/main/resources/game_img/player_sprite_" + j + i + ".png";
-                    ImageIO.write(buffImg, "png", new File(str));
-                }
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
 
     public static void cropImageWall() {
         try {

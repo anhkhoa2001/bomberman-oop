@@ -19,7 +19,7 @@ public class MapOne {
 
     public static String[] map1 = {
             "###################################",
-            "#                                 #",
+            "#     &                           #",
             "#                                 #",
             "#                                 #",
             "#                                 #",

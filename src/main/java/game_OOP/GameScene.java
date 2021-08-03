@@ -1,6 +1,10 @@
 package game_OOP;
 
 import game_OOP.entity.*;
+import game_OOP.entity.bomb.Bomb;
+import game_OOP.entity.tile.Brick;
+import game_OOP.entity.tile.Grass;
+import game_OOP.entity.tile.Wall;
 import game_OOP.map.MapOne;
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.KeyCode;
@@ -15,6 +19,7 @@ public class GameScene extends GeneralScene {
     protected ArrayList<Wall> wallArrayList = new ArrayList<>();
     protected ArrayList<Grass> grassArrayList = new ArrayList<>();
     protected ArrayList<Brick> brickArrayList = new ArrayList<>();
+    protected ArrayList<Bomb> bombArrayList = new ArrayList<>();
 
     public GameScene() {
         super();
@@ -22,11 +27,11 @@ public class GameScene extends GeneralScene {
     }
 
     public void createMap() {
-        for(int i=0; i< MapOne.map.length; i++) {
-            for(int j=0; j<MapOne.map[i].length(); j++) {
+        for(int i=0; i< MapOne.map1.length; i++) {
+            for(int j=0; j<MapOne.map1[i].length(); j++) {
                 Grass grass = new Grass(j*Sprite.size, i*Sprite.size + 40);
                 grassArrayList.add(grass);
-                    switch (MapOne.map[i].charAt(j)) {
+                    switch (MapOne.map1[i].charAt(j)) {
                     case '#':
                         Wall wall = new Wall(j*Sprite.size, i*Sprite.size + 40);
                         wallArrayList.add(wall);
@@ -41,6 +46,7 @@ public class GameScene extends GeneralScene {
     }
     @Override
     public void draw() {
+        Bomb bomb = new Bomb(4*Sprite.size, 4*Sprite.size + 40);
         pressedKey.clear();
         createMap();
         new AnimationTimer() {
@@ -52,6 +58,8 @@ public class GameScene extends GeneralScene {
                     grass.draw(gc);
                 }
                 bomber.draw(gc);
+                bomb.draw(gc);
+                bomb.changeSpriteBomb();
 
                 for (Wall wall : wallArrayList) {
                     wall.draw(gc);
