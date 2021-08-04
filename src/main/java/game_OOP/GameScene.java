@@ -1,13 +1,14 @@
 package game_OOP;
 
 import game_OOP.entity.*;
-import game_OOP.entity.bomb.Bomb;
 import game_OOP.entity.tile.Brick;
 import game_OOP.entity.tile.Grass;
 import game_OOP.entity.tile.Wall;
 import game_OOP.map.MapOne;
 import javafx.animation.AnimationTimer;
+import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -19,11 +20,17 @@ public class GameScene extends GeneralScene {
     protected ArrayList<Wall> wallArrayList = new ArrayList<>();
     protected ArrayList<Grass> grassArrayList = new ArrayList<>();
     protected ArrayList<Brick> brickArrayList = new ArrayList<>();
-    protected ArrayList<Bomb> bombArrayList = new ArrayList<>();
+
+    protected ArrayList<Wall> wallArrayList1 = new ArrayList<>();
+
+    protected ArrayList<Double> ddx = new ArrayList<>();
+    protected ArrayList<Double> ddy = new ArrayList<>();
+
+    protected int countChange = 0;
 
     public GameScene() {
         super();
-        bomber = new Player(48, 96);
+        bomber = new Player(48, 88);
     }
 
     public void createMap() {
@@ -44,11 +51,67 @@ public class GameScene extends GeneralScene {
             }
         }
     }
+
+    public void addElement(ArrayList<Double> array, Double var) {
+        int count = 0;
+        for(int i=0; i<array.size(); i++) {
+            if(var.equals(array.get(i))) {
+                count++;
+            }
+        }
+        if(count == 0) {
+            array.add(var);
+        }
+    }
+
     @Override
     public void draw() {
-        Bomb bomb = new Bomb(4*Sprite.size, 4*Sprite.size + 40);
         pressedKey.clear();
         createMap();
+
+        setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                switch (event.getCode()) {
+                    case A:
+                        left = true;
+                        break;
+                    case D:
+                        right = true;
+                        break;
+                    case S:
+                        bot = true;
+                        break;
+                    case W:
+                        top = true;
+                        break;
+                    case K:
+                        Wall w = new Wall(bomber.getX(), bomber.getY());
+                        w.draw(gc);
+                        wallArrayList.add(w);
+                }
+            }
+        });
+        setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                switch (event.getCode()) {
+                    case A:
+                        left = false;
+                        break;
+                    case D:
+                        right = false;
+                        break;
+                    case S:
+                        bot = false;
+                        break;
+                    case W:
+                        top = false;
+                        break;
+                }
+            }
+        });
+
         new AnimationTimer() {
             public void handle(long l) {
                 gc.setFill(Color.BLACK);
@@ -58,8 +121,6 @@ public class GameScene extends GeneralScene {
                     grass.draw(gc);
                 }
                 bomber.draw(gc);
-                bomb.draw(gc);
-                bomb.changeSpriteBomb();
 
                 for (Wall wall : wallArrayList) {
                     wall.draw(gc);
@@ -69,22 +130,22 @@ public class GameScene extends GeneralScene {
                     brick.draw(gc);
                 }
 
-                if(pressedKey.contains(KeyCode.D)) {
+                if(right) {
                     bomber.moveX(Sprite.speed/2);
                     bomber.collisionBrick(Sprite.directionRIGHT, brickArrayList);
                     bomber.collisionWall(Sprite.directionRIGHT, wallArrayList);
                 }
-                else if(pressedKey.contains(KeyCode.A)) {
+                else if(left) {
                     bomber.moveX(-Sprite.speed/2);
                     bomber.collisionBrick(Sprite.directionLEFT, brickArrayList);
                     bomber.collisionWall(Sprite.directionLEFT, wallArrayList);
                 }
-                else if(pressedKey.contains(KeyCode.W)) {
+                else if(top) {
                     bomber.moveY(-Sprite.speed/2);
                     bomber.collisionBrick(Sprite.directionTOP, brickArrayList);
                     bomber.collisionWall(Sprite.directionTOP, wallArrayList);
                 }
-                else if(pressedKey.contains(KeyCode.S)) {
+                else if(bot) {
                     bomber.moveY(Sprite.speed/2);
                     bomber.collisionBrick(Sprite.directionBOTTOM, brickArrayList);
                     bomber.collisionWall(Sprite.directionBOTTOM, wallArrayList);
@@ -92,12 +153,17 @@ public class GameScene extends GeneralScene {
                 else {
                     bomber.stop();
                 }
-
                 if(bomber.getX() > WIDTH/2 && bomber.getX() < ((WIDTH + 480) - WIDTH/2)) {
                     root.setLayoutX(-(bomber.getX()-WIDTH/2));
                     pane.setTranslateX(bomber.getX()-WIDTH/2);
                 }
+
             }
         }.start();
+    }
+
+    public Wall create(double x, double y) {
+        Wall wall = new Wall(x, y);
+        return wall;
     }
 }

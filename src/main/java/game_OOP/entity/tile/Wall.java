@@ -15,6 +15,7 @@ public class Wall extends Sprite {
 
     public Wall(double x, double y) {
         super(widthWall, heightWall, widthX, heightY);
+
         this.x = x;
         this.y = y;
 
@@ -27,4 +28,5 @@ public class Wall extends Sprite {
             e.printStackTrace();
         }
     }
+
 }

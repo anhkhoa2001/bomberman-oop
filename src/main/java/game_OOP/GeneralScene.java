@@ -2,12 +2,15 @@ package game_OOP;
 
 import game_OOP.entity.Sprite;
 import game_OOP.map.MapOne;
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -29,13 +32,17 @@ public abstract class GeneralScene extends Scene {
 
     protected Set<KeyCode> pressedKey = new HashSet<>();
     protected Set<KeyCode> resealedKey = new HashSet<>();
+    protected Set<KeyCode> bombKey = new HashSet<>();
 
     protected static final double WIDTH = 1200;
     protected static final double HEIGHT = 664;
 
     private final int countTime = 302;
     private final int countPoint = 0;
+    public int count = 0;
     public Timer timer = new Timer();
+
+    public boolean top, left, right, bot;
 
     public void setTime() {
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -87,14 +94,6 @@ public abstract class GeneralScene extends Scene {
         createAttr();
 
         this.setRoot(root);
-
-        this.setOnKeyPressed(e -> {
-            pressedKey.add(e.getCode());
-        });
-        this.setOnKeyReleased(e -> {
-            pressedKey.remove(e.getCode());
-            resealedKey.add(e.getCode());
-        });
 
         root.getChildren().addAll(pane, canvas);
     }

@@ -6,6 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class Bomb extends AnimationSprite {
     private final String urlBomb = "src/main/resources/img/bomb2.png";
@@ -27,10 +28,6 @@ public class Bomb extends AnimationSprite {
     private double spriteXBOTTOM;
     private double spriteYBOTTOM;
 
-    private final int countCenter = 0;
-
-    private int changeDirection = 0;
-
     private Image imageBomb;
     private Image imageExplode;
 
@@ -39,20 +36,20 @@ public class Bomb extends AnimationSprite {
     private Image imageTOP;
     private Image imageBOTTOM;
 
+    private ArrayList<Double> dx = new ArrayList<>();
+    private ArrayList<Double> dy = new ArrayList<>();
+
     public void setImageAll(Image image) {
         this.imageLEFT = image;
         this.imageBOTTOM = image;
         this.imageTOP = image;
         this.imageRIGHT = image;
     }
-    private final double speedBomb = 2;
+    private static final double speedBomb = 4;
 
 
-    public Bomb(double x, double y) {
+    public Bomb() {
         super(widthBomb, heightBomb, widthX, heightY);
-
-        this.x = x;
-        this.y = y;
 
         try {
             File fileBomb = new File(urlBomb);
@@ -65,10 +62,12 @@ public class Bomb extends AnimationSprite {
             imageRIGHT = new Image(fileExplode.toURI().toString());
             imageBOTTOM = new Image(fileExplode.toURI().toString());
             imageTOP = new Image(fileExplode.toURI().toString());
+            setImageAll(imageBomb);
         } catch (Exception e) {
             e.printStackTrace();
         }
         createCoordinates();
+        updateDirection();
     }
 
     public void changeSpriteBomb() {
@@ -80,79 +79,99 @@ public class Bomb extends AnimationSprite {
         updateTOP();
     }
 
+    public void setCoordinates(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
     public void changeSprite() {
         countChange ++;
-        if(countChange <= speedBomb*10) {
+        if(countChange <= 0) {
+            setImageAll(imageBomb);
+            countSprite = 0;
+        }
+        else if(countChange <= speedBomb*10) {
             setImageAll(imageBomb);
             countSprite = 0;
             this.setWidth(widthBomb);
         }
-        else if(countChange == speedBomb*10*2) {
+        else if(countChange <= speedBomb*10*2) {
+            setImageAll(imageBomb);
             countSprite = 1;
             this.setWidth(widthBomb + 0.5);
         }
-        else if(countChange == speedBomb*10*3) {
+        else if(countChange <= speedBomb*10*3) {
+            setImageAll(imageBomb);
             countSprite = 2;
             this.setWidth(14.7);
         }
-        else if(countChange == speedBomb*10*4) {
+        else if(countChange <= speedBomb*10*4) {
+            setImageAll(imageBomb);
             countSprite = 0;
             this.setWidth(widthBomb);
         }
-        else if(countChange == speedBomb*10*5) {
+        else if(countChange <= speedBomb*10*5) {
+            setImageAll(imageBomb);
             countSprite = 1;
             this.setWidth(widthBomb + 0.5);
         }
-        else if(countChange == speedBomb*10*6) {
+        else if(countChange <= speedBomb*10*6) {
+            setImageAll(imageBomb);
             countSprite = 2;
             this.setWidth(14.7);
         }
-        else if(countChange == speedBomb*10*7) {
+        else if(countChange <= speedBomb*10*6.1) {
             setDrawImage(imageExplode);
             setImageAll(imageExplode);
             countSprite = 3;
             this.setWidth(32);
             this.setHeight(32);
         }
-        else if(countChange == speedBomb*10*8) {
+        else if(countChange <= speedBomb*10*6.15) {
             countSprite = 4;
         }
-        else if(countChange == speedBomb*10*9) {
+        else if(countChange <= speedBomb*10*6.25) {
             countSprite = 5;
         }
-        else if(countChange == speedBomb*10*10) {
+        else if(countChange <= speedBomb*10*6.4) {
             countSprite = 6;
         }
-        else if(countChange == speedBomb*10*11) {
-            countSprite = 7;
-        }
-        else if(countChange > speedBomb*10*12) {
+        else {
             setImageAll(imageBomb);
-            countSprite = 0;
+            setDrawImage(imageBomb);
+            countSprite = 7;
         }
     }
 
     public void createCoordinates() {
         //center
-        coordinatesX[4] = new double[] {0, 17, 32, 0, 0,  0,  0};
-        coordinatesY[4] = new double[] {0, 0,  0,  0, 32, 64, 96};
+        coordinatesX[4] = new double[] {0, 17, 32, 0, 0,  0,  0,  0};
+        coordinatesY[4] = new double[] {0, 0,  0,  0, 32, 64, 96, 16};
         //trai
-        coordinatesX[0] = new double[] {0,  0,  0,  192, 192, 192, 192};
-        coordinatesY[0] = new double[] {16, 16, 16, 0,   32,  64,  96};
+        coordinatesX[0] = new double[] {0,  0,  0,  192, 192, 192, 192, 0};
+        coordinatesY[0] = new double[] {16, 16, 16, 0,   32,  64,  96,  16};
         //phai
-        coordinatesX[1] = new double[] {0,  0,  0,  160, 160, 160, 160};
-        coordinatesY[1] = new double[] {16, 16, 16, 0,   32,  64,  96};
+        coordinatesX[1] = new double[] {0,  0,  0,  160, 160, 160, 160, 0};
+        coordinatesY[1] = new double[] {16, 16, 16, 0,   32,  64,  96,  16};
         //duoi
-        coordinatesX[2] = new double[] {0,  0,  0,  128, 128, 128, 128};
-        coordinatesY[2] = new double[] {16, 16, 16, 0,   32,  64,  96};
+        coordinatesX[2] = new double[] {0,  0,  0,  128, 128, 128, 128, 0};
+        coordinatesY[2] = new double[] {16, 16, 16, 0,   32,  64,  96,  16};
         //tren
-        coordinatesX[3] = new double[] {0,  0,  0,  96, 96, 96, 96};
-        coordinatesY[3] = new double[] {16, 16, 16, 0,  32, 64, 96};
+        coordinatesX[3] = new double[] {0,  0,  0,  96, 96, 96, 96, 0};
+        coordinatesY[3] = new double[] {16, 16, 16, 0,  32, 64, 96, 16};
     }
 
     public void updateSprite() {
         spriteX = coordinatesX[4][countSprite];
         spriteY = coordinatesY[4][countSprite];
+    }
+
+    public void updateDirection() {
+        countSprite = 0;
+        updateTOP();
+        updateRIGHT();
+        updateBOTTOM();
+        updateLEFT();
     }
 
     public void updateTOP() {
@@ -175,8 +194,6 @@ public class Bomb extends AnimationSprite {
         spriteYLEFT = coordinatesY[0][countSprite];
     }
 
-
-    @Override
     public void draw(GraphicsContext gc) {
         gc.drawImage(drawImage, spriteX, spriteY, width, height, x, y, widthX, heightY);
         gc.drawImage(imageLEFT, spriteXLEFT, spriteYLEFT, widthExplode, heightExplode, x - 48, y, widthX, heightY);
