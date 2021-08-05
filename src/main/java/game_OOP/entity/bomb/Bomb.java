@@ -2,6 +2,7 @@ package game_OOP.entity.bomb;
 
 import game_OOP.entity.AnimationSprite;
 import game_OOP.entity.Sprite;
+import game_OOP.entity.tile.Wall;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 public class Bomb extends AnimationSprite {
     private final String urlBomb = "src/main/resources/img/bomb2.png";
     private final String urlExplode = "src/main/resources/img/explode.png";
+
+    private boolean top, bot, left, right;
 
     private static final double widthBomb = 16;
     private static final double heightBomb = 16;
@@ -36,20 +39,20 @@ public class Bomb extends AnimationSprite {
     private Image imageTOP;
     private Image imageBOTTOM;
 
-    private ArrayList<Double> dx = new ArrayList<>();
-    private ArrayList<Double> dy = new ArrayList<>();
-
-    public void setImageAll(Image image) {
-        this.imageLEFT = image;
-        this.imageBOTTOM = image;
-        this.imageTOP = image;
-        this.imageRIGHT = image;
+    public void setImageAll(Image imageLEFT, Image imageRIGHT, Image imageBOTTOM, Image imageTOP) {
+        this.imageLEFT = imageLEFT;
+        this.imageBOTTOM = imageBOTTOM;
+        this.imageTOP = imageTOP;
+        this.imageRIGHT = imageRIGHT;
     }
     private static final double speedBomb = 4;
 
 
-    public Bomb() {
+    public Bomb(double x, double y) {
         super(widthBomb, heightBomb, widthX, heightY);
+
+        this.x = x;
+        this.y = y;
 
         try {
             File fileBomb = new File(urlBomb);
@@ -62,84 +65,64 @@ public class Bomb extends AnimationSprite {
             imageRIGHT = new Image(fileExplode.toURI().toString());
             imageBOTTOM = new Image(fileExplode.toURI().toString());
             imageTOP = new Image(fileExplode.toURI().toString());
-            setImageAll(imageBomb);
+            setImageAll(imageBomb, imageBomb, imageBomb, imageBomb);
         } catch (Exception e) {
             e.printStackTrace();
         }
         createCoordinates();
-        updateDirection();
+        updateDirection(0);
     }
 
-    public void changeSpriteBomb() {
+    public void changeSpriteBomb(ArrayList<Wall> walls) {
         changeSprite();
         updateSprite();
-        updateLEFT();
-        updateBOTTOM();
-        updateRIGHT();
-        updateTOP();
-    }
-
-    public void setCoordinates(double x, double y) {
-        this.x = x;
-        this.y = y;
+        collisionWall(walls, countSprite);
     }
 
     public void changeSprite() {
         countChange ++;
         if(countChange <= 0) {
-            setImageAll(imageBomb);
             countSprite = 0;
         }
         else if(countChange <= speedBomb*10) {
-            setImageAll(imageBomb);
             countSprite = 0;
             this.setWidth(widthBomb);
         }
         else if(countChange <= speedBomb*10*2) {
-            setImageAll(imageBomb);
             countSprite = 1;
             this.setWidth(widthBomb + 0.5);
         }
         else if(countChange <= speedBomb*10*3) {
-            setImageAll(imageBomb);
             countSprite = 2;
             this.setWidth(14.7);
         }
         else if(countChange <= speedBomb*10*4) {
-            setImageAll(imageBomb);
             countSprite = 0;
             this.setWidth(widthBomb);
         }
         else if(countChange <= speedBomb*10*5) {
-            setImageAll(imageBomb);
             countSprite = 1;
             this.setWidth(widthBomb + 0.5);
         }
         else if(countChange <= speedBomb*10*6) {
-            setImageAll(imageBomb);
             countSprite = 2;
             this.setWidth(14.7);
         }
         else if(countChange <= speedBomb*10*6.1) {
             setDrawImage(imageExplode);
-            setImageAll(imageExplode);
+            setImageAll(imageExplode, imageExplode, imageExplode, imageExplode);
             countSprite = 3;
             this.setWidth(32);
             this.setHeight(32);
         }
-        else if(countChange <= speedBomb*10*6.15) {
+        else if(countChange <= speedBomb*10*70) {
             countSprite = 4;
         }
-        else if(countChange <= speedBomb*10*6.25) {
+        else if(countChange <= speedBomb*10*130) {
             countSprite = 5;
         }
-        else if(countChange <= speedBomb*10*6.4) {
+        else if(countChange <= speedBomb*10*190) {
             countSprite = 6;
-        }
-        else {
-            setImageAll(imageBomb);
-            setDrawImage(imageBomb);
-            countSprite = 7;
         }
     }
 
@@ -166,32 +149,171 @@ public class Bomb extends AnimationSprite {
         spriteY = coordinatesY[4][countSprite];
     }
 
-    public void updateDirection() {
-        countSprite = 0;
-        updateTOP();
-        updateRIGHT();
-        updateBOTTOM();
-        updateLEFT();
+    public void updateDirection(int cs) {
+        updateTOP(cs);
+        updateRIGHT(cs);
+        updateBOTTOM(cs);
+        updateLEFT(cs);
     }
 
-    public void updateTOP() {
-        spriteXTOP = coordinatesX[3][countSprite];
-        spriteYTOP = coordinatesY[3][countSprite];
+    public void updateTOP(int cs) {
+        spriteXTOP = coordinatesX[3][cs];
+        spriteYTOP = coordinatesY[3][cs];
     }
 
-    public void updateBOTTOM() {
-        spriteXBOTTOM = coordinatesX[2][countSprite];
-        spriteYBOTTOM = coordinatesY[2][countSprite];
+    public void updateBOTTOM(int cs) {
+        spriteXBOTTOM = coordinatesX[2][cs];
+        spriteYBOTTOM = coordinatesY[2][cs];
     }
 
-    public void updateRIGHT() {
-        spriteXRIGHT = coordinatesX[1][countSprite];
-        spriteYRIGHT = coordinatesY[1][countSprite];
+    public void updateRIGHT(int cs) {
+        spriteXRIGHT = coordinatesX[1][cs];
+        spriteYRIGHT = coordinatesY[1][cs];
     }
 
-    public void updateLEFT() {
-        spriteXLEFT = coordinatesX[0][countSprite];
-        spriteYLEFT = coordinatesY[0][countSprite];
+    public void updateLEFT(int cs) {
+        spriteXLEFT = coordinatesX[0][cs];
+        spriteYLEFT = coordinatesY[0][cs];
+    }
+
+    public void collisionWall(ArrayList<Wall> walls, int cs) {
+        double dxLEFT = getX();
+        double dxRIGHT = getX() + 48;
+        double dyTOP = getY();
+        double dyBOT = getY() + 48;
+
+        for(int i=0; i<walls.size(); i++) {
+            if(dxLEFT - 48 == walls.get(i).getX() && dyTOP == walls.get(i).getY()) {
+                left = true;
+            }
+            else if(dxRIGHT == walls.get(i).getX() && dyTOP == walls.get(i).getY()) {
+                right = true;
+            }
+            else if(dyTOP - 48 == walls.get(i).getY() && dxLEFT == walls.get(i).getX()) {
+                top = true;
+            }
+            else if(dyBOT == walls.get(i).getY() && dxLEFT == walls.get(i).getX()) {
+                bot = true;
+            }
+        }
+        if(top) {
+            imageTOP = imageBomb;
+            updateTOP(0);
+            updateRIGHT(cs);
+            updateBOTTOM(cs);
+            updateLEFT(cs);
+        }
+        if(bot) {
+            imageBOTTOM = imageBomb;
+            updateTOP(cs);
+            updateRIGHT(cs);
+            updateBOTTOM(0);
+            updateLEFT(cs);
+        }
+        if(left) {
+            imageLEFT = imageBomb;
+            updateTOP(cs);
+            updateRIGHT(cs);
+            updateBOTTOM(cs);
+            updateLEFT(0);
+        }
+        if(right) {
+            imageRIGHT = imageBomb;
+            updateTOP(cs);
+            updateRIGHT(0);
+            updateBOTTOM(cs);
+            updateLEFT(cs);
+        }
+        if(bot && top) {
+            imageBOTTOM = imageBomb;
+            imageTOP = imageBomb;
+            updateTOP(0);
+            updateRIGHT(cs);
+            updateBOTTOM(0);
+            updateLEFT(cs);
+        }
+        if(bot && left) {
+            imageBOTTOM = imageBomb;
+            imageLEFT = imageBomb;
+            updateTOP(cs);
+            updateRIGHT(cs);
+            updateBOTTOM(0);
+            updateLEFT(0);
+        }
+        if(bot && right) {
+            imageRIGHT = imageBomb;
+            imageBOTTOM = imageBomb;
+            updateTOP(cs);
+            updateRIGHT(0);
+            updateBOTTOM(0);
+            updateLEFT(cs);
+        }
+        if(top && left) {
+            imageLEFT = imageBomb;
+            imageTOP = imageBomb;
+            updateTOP(0);
+            updateRIGHT(cs);
+            updateBOTTOM(cs);
+            updateLEFT(0);
+        }
+        if(right && top) {
+            imageRIGHT = imageBomb;
+            imageTOP = imageBomb;
+            updateTOP(0);
+            updateRIGHT(0);
+            updateBOTTOM(cs);
+            updateLEFT(cs);
+        }
+        if(left && right) {
+            imageLEFT = imageBomb;
+            imageRIGHT = imageBomb;
+            updateTOP(cs);
+            updateRIGHT(0);
+            updateBOTTOM(cs);
+            updateLEFT(0);
+        }
+        if(left && right && top) {
+            imageLEFT = imageBomb;
+            imageRIGHT = imageBomb;
+            imageTOP = imageBomb;
+            updateTOP(0);
+            updateRIGHT(0);
+            updateBOTTOM(cs);
+            updateLEFT(0);
+        }
+        if(left && right && bot) {
+            imageLEFT = imageBomb;
+            imageRIGHT = imageBomb;
+            imageBOTTOM = imageBomb;
+            updateTOP(cs);
+            updateRIGHT(0);
+            updateBOTTOM(0);
+            updateLEFT(0);
+        }
+        if(left && bot && top) {
+            imageLEFT = imageBomb;
+            imageBOTTOM = imageBomb;
+            imageTOP = imageBomb;
+            updateTOP(0);
+            updateRIGHT(cs);
+            updateBOTTOM(0);
+            updateLEFT(0);
+        }
+        if(right && bot && top) {
+            imageRIGHT = imageBomb;
+            imageBOTTOM = imageBomb;
+            imageTOP = imageBomb;
+            updateTOP(0);
+            updateRIGHT(0);
+            updateBOTTOM(0);
+            updateLEFT(cs);
+        }
+        if(!top && !bot && !right && !left) {
+            updateTOP(cs);
+            updateRIGHT(cs);
+            updateBOTTOM(cs);
+            updateLEFT(cs);
+        }
     }
 
     public void draw(GraphicsContext gc) {

@@ -1,72 +1,129 @@
-package game_OOP;
+package game_OOP.scene;
 
+import game_OOP.Game;
 import game_OOP.entity.*;
+import game_OOP.entity.bomb.Bomb;
 import game_OOP.entity.tile.Brick;
 import game_OOP.entity.tile.Grass;
 import game_OOP.entity.tile.Wall;
 import game_OOP.map.MapOne;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
-import javafx.scene.input.KeyCode;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameScene extends GeneralScene {
 
     private Player bomber;
 
+    public AnchorPane root = new AnchorPane();
+    protected Canvas canvas;
+    public GraphicsContext gc;
+
+    public Pane pane = new Pane();
+    public Label labelTime = new Label();
+    public Label labelPoint = new Label();
+
+    private final int countTime = 5;
+    private int countPoint = 0;
+    public Timer timer = new Timer();
+
+    public int count = 0;
+    public boolean top, left, right, bot, exit;
+
     protected ArrayList<Wall> wallArrayList = new ArrayList<>();
     protected ArrayList<Grass> grassArrayList = new ArrayList<>();
     protected ArrayList<Brick> brickArrayList = new ArrayList<>();
+    protected ArrayList<Bomb> bombArrayList = new ArrayList<>();
+    protected ArrayList<Player> playerArrayList = new ArrayList<>();
 
-    protected ArrayList<Wall> wallArrayList1 = new ArrayList<>();
+    public void setTime() {
+        timer.scheduleAtFixedRate(new TimerTask() {
+            int count = countTime;
+            @Override
+            public void run() {
+                Platform.runLater(() -> labelTime.setText("Time: " + count));
+                count--;
 
-    protected ArrayList<Double> ddx = new ArrayList<>();
-    protected ArrayList<Double> ddy = new ArrayList<>();
+                if(count < 1) {
+                    timer.cancel();
+                }
+            }
+        }, 2000, 1000);
+    }
 
-    protected int countChange = 0;
+    public void setPoint() {
+        labelPoint.setText("Point: " + countPoint);
+    }
+
+    public void createAttr() {
+        pane.setTranslateX(0);
+        pane.setTranslateY(0);
+        pane.setPrefHeight(40);
+        pane.setPrefWidth(WIDTH);
+        pane.setStyle("-fx-background-color: black");
+
+        labelTime.setTranslateX(Sprite.size*4);
+        labelTime.setTranslateY(10);
+        labelTime.setTextFill(Color.WHITE);
+        labelTime.setFont(new Font("Arial", 15));
+        setTime();
+
+        labelPoint.setTranslateX(Sprite.size*19);
+        labelPoint.setTranslateY(10);
+        labelPoint.setTextFill(Color.WHITE);
+        labelPoint.setFont(new Font("Arial", 15));
+        setPoint();
+
+        pane.getChildren().addAll(labelTime, labelPoint);
+    }
 
     public GameScene() {
         super();
-        bomber = new Player(48, 88);
+        canvas = new Canvas(Sprite.size * MapOne.map[0].length(), HEIGHT);
+        gc = canvas.getGraphicsContext2D();
+
+        createAttr();
+
+        this.setRoot(root);
+
+        root.getChildren().addAll(pane, canvas);
+
     }
 
     public void createMap() {
-        for(int i=0; i< MapOne.map1.length; i++) {
-            for(int j=0; j<MapOne.map1[i].length(); j++) {
+        for(int i=0; i< MapOne.map.length; i++) {
+            for(int j=0; j<MapOne.map[i].length(); j++) {
                 Grass grass = new Grass(j*Sprite.size, i*Sprite.size + 40);
                 grassArrayList.add(grass);
-                    switch (MapOne.map1[i].charAt(j)) {
+                    switch (MapOne.map[i].charAt(j)) {
                     case '#':
                         Wall wall = new Wall(j*Sprite.size, i*Sprite.size + 40);
                         wallArrayList.add(wall);
                         break;
-                    case 'B':
+                    /*case 'B':
                          Brick brick = new Brick(j*Sprite.size, i*Sprite.size + 40);
                          brickArrayList.add(brick);
-                         break;
+                         break;*/
                 }
             }
         }
+        bomber = new Player(48, 88);
+        playerArrayList.add(bomber);
     }
-
-    public void addElement(ArrayList<Double> array, Double var) {
-        int count = 0;
-        for(int i=0; i<array.size(); i++) {
-            if(var.equals(array.get(i))) {
-                count++;
-            }
-        }
-        if(count == 0) {
-            array.add(var);
-        }
-    }
-
     @Override
     public void draw() {
-        pressedKey.clear();
         createMap();
 
         setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -85,10 +142,14 @@ public class GameScene extends GeneralScene {
                     case W:
                         top = true;
                         break;
-                    case K:
-                        Wall w = new Wall(bomber.getX(), bomber.getY());
-                        w.draw(gc);
-                        wallArrayList.add(w);
+                    case F:
+                        Bomb bomb = createBomb(bomber.getX(), bomber.getY());
+                        bombArrayList.add(bomb);
+                        count = 0;
+                        break;
+                    case ESCAPE:
+                        exit = true;
+                        break;
                 }
             }
         });
@@ -114,13 +175,17 @@ public class GameScene extends GeneralScene {
 
         new AnimationTimer() {
             public void handle(long l) {
+                count++;
                 gc.setFill(Color.BLACK);
                 gc.fillRect(0, 40, canvas.getWidth(), canvas.getHeight());
 
                 for (Grass grass : grassArrayList) {
                     grass.draw(gc);
                 }
-                bomber.draw(gc);
+
+                for (Player player : playerArrayList) {
+                    player.draw(gc);
+                }
 
                 for (Wall wall : wallArrayList) {
                     wall.draw(gc);
@@ -128,6 +193,14 @@ public class GameScene extends GeneralScene {
 
                 for(Brick brick : brickArrayList) {
                     brick.draw(gc);
+                }
+
+                for(Bomb bomb : bombArrayList) {
+                    bomb.draw(gc);
+                    bomb.changeSpriteBomb(wallArrayList);
+                }
+                if(count>=4*10*190) {
+                    bombArrayList.clear();
                 }
 
                 if(right) {
@@ -150,20 +223,36 @@ public class GameScene extends GeneralScene {
                     bomber.collisionBrick(Sprite.directionBOTTOM, brickArrayList);
                     bomber.collisionWall(Sprite.directionBOTTOM, wallArrayList);
                 }
+                else if(exit) {
+                    this.stop();
+                    Game.changeScene(Game.endScene);
+                }
                 else {
                     bomber.stop();
                 }
+
+                if(bombArrayList.size() > 0) {
+                    if(count >= 61*4 && count <= 1900*4) {
+                        if(bomber.collisionBomb(Sprite.directionLEFT, bombArrayList.get(0))) {
+                            System.out.println("cham");
+                        }
+                        else {
+                            System.out.println("khong cham");
+                        }
+                    }
+                }
+
                 if(bomber.getX() > WIDTH/2 && bomber.getX() < ((WIDTH + 480) - WIDTH/2)) {
                     root.setLayoutX(-(bomber.getX()-WIDTH/2));
                     pane.setTranslateX(bomber.getX()-WIDTH/2);
                 }
-
             }
         }.start();
     }
 
-    public Wall create(double x, double y) {
-        Wall wall = new Wall(x, y);
-        return wall;
+    public Bomb createBomb(double x, double y) {
+        double dx = x - x%48;
+        double dy = y - (y-40)%48;
+        return new Bomb(dx, dy);
     }
 }

@@ -3,7 +3,7 @@ package game_OOP.map;
 public class MapOne {
     public static String[] map = {
             "###################################",
-            "#    BBB   B   B   B     B   BB   #",
+            "#  # BBB   B   B   B     B   BB   #",
             "#B#0#0#0#0#0#B#0#B#0#0#B#0#B#0#0#B#",
             "#  BB    B B  BB  BB   B    B   BB#",
             "#0#0#0#B#0#0#0#0#0#0#B#0#0#B#0#0#0#",
@@ -13,7 +13,7 @@ public class MapOne {
             "#0#0#0#B#0#0#B#0#0#0#0#B#0#0#0#0#0#",
             "# BB     BB   B   BBB   BBB    BB #",
             "#0#0#B#0#0#B#0#0#B#0#0#B#0#0#B#0#0#",
-            "#B    BB    B   B B   BB     BB  B#",
+            "#B#   BB    B   B B   BB     BB  B#",
             "###################################",
     };
 

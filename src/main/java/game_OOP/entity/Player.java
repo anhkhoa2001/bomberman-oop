@@ -1,5 +1,6 @@
 package game_OOP.entity;
 
+import game_OOP.entity.bomb.Bomb;
 import game_OOP.entity.tile.Brick;
 import game_OOP.entity.tile.Wall;
 import javafx.scene.image.Image;
@@ -112,6 +113,18 @@ public class Player extends AnimationSprite {
                 }
                 break;
         }
+    }
+
+    public boolean collisionBomb(int direction, Bomb bomb) {
+        switch (direction) {
+            //trai
+            case 0:
+                if(this.getX() < (bomb.getX() + Sprite.size*2) && this.getX() + 28 > (bomb.getX() - 48) && this.getY() + 36 > (bomb.getY() - 48)) {
+                    return true;
+                }
+                break;
+        }
+        return false;
     }
 
     public void collisionBrick(int direction, ArrayList<Brick> bricks) {
