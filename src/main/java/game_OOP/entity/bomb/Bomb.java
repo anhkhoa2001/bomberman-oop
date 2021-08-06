@@ -2,6 +2,7 @@ package game_OOP.entity.bomb;
 
 import game_OOP.entity.AnimationSprite;
 import game_OOP.entity.Sprite;
+import game_OOP.entity.tile.Brick;
 import game_OOP.entity.tile.Wall;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -45,7 +46,7 @@ public class Bomb extends AnimationSprite {
         this.imageTOP = imageTOP;
         this.imageRIGHT = imageRIGHT;
     }
-    private static final double speedBomb = 4;
+    private static final double speedBomb = 40;
 
 
     public Bomb(double x, double y) {
@@ -84,44 +85,44 @@ public class Bomb extends AnimationSprite {
         if(countChange <= 0) {
             countSprite = 0;
         }
-        else if(countChange <= speedBomb*10) {
+        else if(countChange <= speedBomb) {
             countSprite = 0;
             this.setWidth(widthBomb);
         }
-        else if(countChange <= speedBomb*10*2) {
+        else if(countChange <= speedBomb*2) {
             countSprite = 1;
             this.setWidth(widthBomb + 0.5);
         }
-        else if(countChange <= speedBomb*10*3) {
+        else if(countChange <= speedBomb*3) {
             countSprite = 2;
             this.setWidth(14.7);
         }
-        else if(countChange <= speedBomb*10*4) {
+        else if(countChange <= speedBomb*4) {
             countSprite = 0;
             this.setWidth(widthBomb);
         }
-        else if(countChange <= speedBomb*10*5) {
+        else if(countChange <= speedBomb*5) {
             countSprite = 1;
             this.setWidth(widthBomb + 0.5);
         }
-        else if(countChange <= speedBomb*10*6) {
+        else if(countChange <= speedBomb*6) {
             countSprite = 2;
             this.setWidth(14.7);
         }
-        else if(countChange <= speedBomb*10*6.1) {
+        else if(countChange <= speedBomb*6.1) {
             setDrawImage(imageExplode);
             setImageAll(imageExplode, imageExplode, imageExplode, imageExplode);
             countSprite = 3;
             this.setWidth(32);
             this.setHeight(32);
         }
-        else if(countChange <= speedBomb*10*70) {
+        else if(countChange <= speedBomb*6.2) {
             countSprite = 4;
         }
-        else if(countChange <= speedBomb*10*130) {
+        else if(countChange <= speedBomb*6.3) {
             countSprite = 5;
         }
-        else if(countChange <= speedBomb*10*190) {
+        else if(countChange <= speedBomb*6.4) {
             countSprite = 6;
         }
     }
@@ -174,6 +175,29 @@ public class Bomb extends AnimationSprite {
     public void updateLEFT(int cs) {
         spriteXLEFT = coordinatesX[0][cs];
         spriteYLEFT = coordinatesY[0][cs];
+    }
+    public void collisionBrick(ArrayList<Brick> bricks) {
+        double dxLEFT = getX();
+        double dxRIGHT = getX() + 48;
+        double dyTOP = getY();
+        double dyBOT = getY() + 48;
+
+        int directionT, directionB, directionR, directionL;
+
+        for(int i=0; i<bricks.size(); i++) {
+            if(dxLEFT - 48 == bricks.get(i).getX() && dyTOP == bricks.get(i).getY()) {
+                bricks.remove(i);
+            }
+            if(dxRIGHT == bricks.get(i).getX() && dyTOP == bricks.get(i).getY()) {
+                bricks.remove(i);
+            }
+            if(dyTOP - 48 == bricks.get(i).getY() && dxLEFT == bricks.get(i).getX()) {
+                bricks.remove(i);
+            }
+            if(dyBOT == bricks.get(i).getY() && dxLEFT == bricks.get(i).getX()) {
+                bricks.remove(i);
+            }
+        }
     }
 
     public void collisionWall(ArrayList<Wall> walls, int cs) {

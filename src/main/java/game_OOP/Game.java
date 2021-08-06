@@ -18,13 +18,13 @@ public class Game extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        this.stage = stage;
+        Game.stage = stage;
 
         scenes[welcomeScene] = new WelcomeScene();
         scenes[gameScene] = new GameScene();
         scenes[endScene] = new EndScene();
 
-        changeScene(gameScene);
+        changeScene(welcomeScene);
         stage.setTitle("Game");
         stage.show();
     }

@@ -35,12 +35,14 @@ public class GameScene extends GeneralScene {
     public Label labelTime = new Label();
     public Label labelPoint = new Label();
 
-    private final int countTime = 5;
+    private final int countTime = 300;
     private int countPoint = 0;
     public Timer timer = new Timer();
 
     public int count = 0;
     public boolean top, left, right, bot, exit;
+
+    private final double timeExplode = 256;
 
     protected ArrayList<Wall> wallArrayList = new ArrayList<>();
     protected ArrayList<Grass> grassArrayList = new ArrayList<>();
@@ -112,10 +114,10 @@ public class GameScene extends GeneralScene {
                         Wall wall = new Wall(j*Sprite.size, i*Sprite.size + 40);
                         wallArrayList.add(wall);
                         break;
-                    /*case 'B':
+                    case 'B':
                          Brick brick = new Brick(j*Sprite.size, i*Sprite.size + 40);
                          brickArrayList.add(brick);
-                         break;*/
+                         break;
                 }
             }
         }
@@ -143,9 +145,11 @@ public class GameScene extends GeneralScene {
                         top = true;
                         break;
                     case F:
-                        Bomb bomb = createBomb(bomber.getX(), bomber.getY());
-                        bombArrayList.add(bomb);
-                        count = 0;
+                        if(count >= timeExplode) {
+                            Bomb bomb = createBomb(bomber.getX(), bomber.getY());
+                            bombArrayList.add(bomb);
+                            count = 0;
+                        }
                         break;
                     case ESCAPE:
                         exit = true;
@@ -198,8 +202,11 @@ public class GameScene extends GeneralScene {
                 for(Bomb bomb : bombArrayList) {
                     bomb.draw(gc);
                     bomb.changeSpriteBomb(wallArrayList);
+                    if(count == 255) {
+                        bomb.collisionBrick(brickArrayList);
+                    }
                 }
-                if(count>=4*10*190) {
+                if(count >= timeExplode) {
                     bombArrayList.clear();
                 }
 
@@ -227,17 +234,11 @@ public class GameScene extends GeneralScene {
                     this.stop();
                     Game.changeScene(Game.endScene);
                 }
-                else {
-                    bomber.stop();
-                }
 
                 if(bombArrayList.size() > 0) {
-                    if(count >= 61*4 && count <= 1900*4) {
-                        if(bomber.collisionBomb(Sprite.directionLEFT, bombArrayList.get(0))) {
-                            System.out.println("cham");
-                        }
-                        else {
-                            System.out.println("khong cham");
+                    if(count >= 61*4 && count <= timeExplode) {
+                        if(bomber.collisionBomb(bombArrayList.get(0))) {
+                            this.stop();
                         }
                     }
                 }

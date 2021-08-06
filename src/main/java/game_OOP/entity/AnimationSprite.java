@@ -37,7 +37,7 @@ public class AnimationSprite extends Sprite {
 
     public void changeSprite(int direction) {
         countChange ++;
-        if(countChange >= speed) {
+        if(countChange >= speed*3) {
             countChange = 0;
             countSprite = (countSprite + 1)%coordinatesX[direction].length;
         }
