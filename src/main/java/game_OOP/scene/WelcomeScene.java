@@ -19,7 +19,7 @@ public class WelcomeScene extends GeneralScene {
 
         Group group;
 
-        File file = new File("src/main/resources/img/button.png");
+        File file = new File("src/main/resources/img/button.jpg");
         try {
             Image image = new Image(file.toURI().toString());
             ImageView imageView = new ImageView(image);
