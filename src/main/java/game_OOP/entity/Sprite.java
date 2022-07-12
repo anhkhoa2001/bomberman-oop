@@ -20,6 +20,7 @@ public class Sprite {
     public static int directionRIGHT = 1;
     public static int directionBOTTOM = 2;
     public static int directionTOP = 3;
+    public static int playerDie = 4;
 
     public static final double size = 48;
 

@@ -1,7 +1,7 @@
 package game_OOP.entity;
 
 public class AnimationSprite extends Sprite {
-    public final int countDirection = 5;
+    public final int countDirection = 6;
 
     public double[][] coordinatesX = new double[countDirection][];
     public double[][] coordinatesY = new double[countDirection][];
@@ -30,6 +30,9 @@ public class AnimationSprite extends Sprite {
                 break;
             case 3:
                 changeSprite(directionTOP);
+                break;
+            case 4:
+                changeSprite(playerDie);
                 break;
         }
         updateSprite(direction);

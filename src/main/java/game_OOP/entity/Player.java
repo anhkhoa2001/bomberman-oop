@@ -14,6 +14,8 @@ public class Player extends AnimationSprite {
     private static final double player_height = 19;
     private static final double player_heightY = 48;
 
+    private int countChangDie = 0;
+
     private static final String urlPlayer = "src/main/resources/img/bomberman.png";
 
     public Player(double x, double y) {
@@ -47,6 +49,9 @@ public class Player extends AnimationSprite {
         coordinatesX[directionTOP] = new double[] {94, 109, 94, 78};
         coordinatesY[directionTOP] = new double[] {23, 23, 23, 23};
 
+        coordinatesX[playerDie] = new double[] {30, 46, 62, 78, 94, 110, 126};
+        coordinatesY[playerDie] = new double[] {42, 42, 42, 42, 42, 42,  42};
+
     }
 
     public void moveX(double value) {
@@ -76,7 +81,7 @@ public class Player extends AnimationSprite {
             //trai
             case 0:
                 for(int i=0; i<walls.size(); i++) {
-                    if (this.getX()> walls.get(i).getX() && this.getX() < walls.get(i).getX() + Sprite.size && this.getY() < walls.get(i).getY() + Sprite.size && this.getY() + 36 > walls.get(i).getY()) {
+                    if (this.getX()> walls.get(i).getX() && this.getX() < walls.get(i).getX() + Sprite.size && this.getY() < walls.get(i).getY() + Sprite.size && this.getY() + 42 > walls.get(i).getY()) {
                         if(this.getY() + Sprite.size > walls.get(i).getY()) {
                             this.setX(walls.get(i).getX() + Sprite.size);
                         }
@@ -86,7 +91,7 @@ public class Player extends AnimationSprite {
                 //phai
             case 1:
                 for(int i=0; i<walls.size(); i++) {
-                    if (this.getX() + 36 > walls.get(i).getX() && this.getX() < walls.get(i).getX() + Sprite.size && this.getY() < walls.get(i).getY() + Sprite.size && this.getY() + 36 > walls.get(i).getY()) {
+                    if (this.getX() + 36 > walls.get(i).getX() && this.getX() < walls.get(i).getX() + Sprite.size && this.getY() < walls.get(i).getY() + Sprite.size && this.getY() + 42 > walls.get(i).getY()) {
                         if(this.getX() < walls.get(i).getX() && this.getY() + Sprite.size > walls.get(i).getY()) {
                             this.setX(walls.get(i).getX() - 36);
                         }
@@ -96,7 +101,7 @@ public class Player extends AnimationSprite {
                 //xuong
             case 2:
                 for(int i=0; i<walls.size(); i++) {
-                    if (this.getX() + 28 > walls.get(i).getX() && this.getX() < walls.get(i).getX() + Sprite.size && this.getY() < walls.get(i).getY() + Sprite.size && this.getY() + 42 > walls.get(i).getY()) {
+                    if (this.getX() + 36 > walls.get(i).getX() && this.getX() < walls.get(i).getX() + Sprite.size && this.getY() < walls.get(i).getY() + Sprite.size && this.getY() + 42 > walls.get(i).getY()) {
                         if(this.getY() < walls.get(i).getY()) {
                             this.setY(walls.get(i).getY() - 42);
                         }
@@ -106,7 +111,7 @@ public class Player extends AnimationSprite {
                 //len
             case 3:
                 for(int i=0; i<walls.size(); i++) {
-                    if (this.getX() + 28 > walls.get(i).getX() && this.getX() < walls.get(i).getX() + 48 && this.getY() < walls.get(i).getY() + Sprite.size && this.getY() + 36 > walls.get(i).getY()) {
+                    if (this.getX() + 36 > walls.get(i).getX() && this.getX() < walls.get(i).getX() + 48 && this.getY() < walls.get(i).getY() + Sprite.size && this.getY() + 42 > walls.get(i).getY()) {
                         if(this.getY() > walls.get(i).getY()) {
                             this.setY(walls.get(i).getY() + Sprite.size);
                         }
@@ -117,16 +122,10 @@ public class Player extends AnimationSprite {
     }
 
     public boolean collisionBomb(Bomb bomb) {
-        if(this.getX() < (bomb.getX() + Sprite.size*2) && this.getX() + 28 > (bomb.getX() - Sprite.size) && this.getY() + 36 > bomb.getY() && this.getY() < (bomb.getY() + Sprite.size)) {
-            return true;
-        }
-        if(this.getX() < (bomb.getX() + Sprite.size) && this.getX() > (bomb.getX()) && this.getY() + 36 > (bomb.getY() - Sprite.size) && this.getY() < bomb.getY()) {
-            return true;
-        }
-        if(this.getX() < (bomb.getX() + Sprite.size) && this.getX() > (bomb.getX()) && this.getY() + 36 > (bomb.getY() + Sprite.size) && this.getY() < (bomb.getY() + Sprite.size*2)) {
-            return true;
-        }
-        return false;
+        //giua//tren//duoi
+        return (this.getX() < (bomb.getX() + Sprite.size * 2) && this.getX() + 36 > (bomb.getX() - Sprite.size) && this.getY() + 42 > bomb.getY() && this.getY() < (bomb.getY() + Sprite.size))
+                || (this.getY() + 42 > (bomb.getY() - Sprite.size) && this.getY() + 42 < bomb.getY() && this.getX() <= (bomb.getX() + Sprite.size) && this.getX() >= (bomb.getX()))
+                || (this.getY() > (bomb.getY() + Sprite.size) && this.getY() < (bomb.getY() + Sprite.size * 2) && this.getX() <= (bomb.getX() + Sprite.size) && this.getX() >= (bomb.getX()));
     }
 
     public void collisionBrick(int direction, ArrayList<Brick> bricks) {
@@ -174,5 +173,35 @@ public class Player extends AnimationSprite {
             default:
                 break;
         }
+    }
+
+    public void spriteDie() {
+        countChangDie++;
+        if(countChangDie <= Bomb.speedBomb/2*0.5) {
+            countSprite = 0;
+        }
+        else if(countChangDie <= Bomb.speedBomb/2*1) {
+            countSprite = 1;
+        }
+        else if(countChangDie <= Bomb.speedBomb/2*1.5) {
+            countSprite = 2;
+        }
+        else if(countChangDie <= Bomb.speedBomb/2*2) {
+            countSprite = 3;
+        }
+        else if(countChangDie <= Bomb.speedBomb/2*2.5) {
+            countSprite = 4;
+        }
+        else if(countChangDie <= Bomb.speedBomb/2*3) {
+            countSprite = 5;
+        }
+        else if(countChangDie <= Bomb.speedBomb/2*3.5) {
+            countSprite = 6;
+        }
+    }
+
+    public void animationDie() {
+        spriteDie();
+        updateSprite(playerDie);
     }
 }

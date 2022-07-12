@@ -39,8 +39,9 @@ public class GameScene extends GeneralScene {
     private int countPoint = 0;
     public Timer timer = new Timer();
 
-    public int count = 0;
-    public boolean top, left, right, bot, exit;
+    public int countBomb = 0;
+    public int countAlive = 0;
+    public boolean top, left, right, bot, exit, alive;
 
     private final double timeExplode = 256;
 
@@ -145,10 +146,10 @@ public class GameScene extends GeneralScene {
                         top = true;
                         break;
                     case F:
-                        if(count >= timeExplode) {
+                        if(countBomb >= 256) {
                             Bomb bomb = createBomb(bomber.getX(), bomber.getY());
                             bombArrayList.add(bomb);
-                            count = 0;
+                            countBomb = 0;
                         }
                         break;
                     case ESCAPE:
@@ -179,7 +180,8 @@ public class GameScene extends GeneralScene {
 
         new AnimationTimer() {
             public void handle(long l) {
-                count++;
+                countBomb++;
+                countAlive++;
                 gc.setFill(Color.BLACK);
                 gc.fillRect(0, 40, canvas.getWidth(), canvas.getHeight());
 
@@ -202,11 +204,11 @@ public class GameScene extends GeneralScene {
                 for(Bomb bomb : bombArrayList) {
                     bomb.draw(gc);
                     bomb.changeSpriteBomb(wallArrayList);
-                    if(count == 255) {
+                    if(countBomb == timeExplode - 1) {
                         bomb.collisionBrick(brickArrayList);
                     }
                 }
-                if(count >= timeExplode) {
+                if(countBomb >= timeExplode) {
                     bombArrayList.clear();
                 }
 
@@ -236,10 +238,21 @@ public class GameScene extends GeneralScene {
                 }
 
                 if(bombArrayList.size() > 0) {
-                    if(count >= 61*4 && count <= timeExplode) {
+                    if(countBomb >= 61*4 && countBomb <= timeExplode) {
                         if(bomber.collisionBomb(bombArrayList.get(0))) {
-                            this.stop();
+                            alive = true;
+                            countAlive = 0;
                         }
+                    }
+                }
+
+                if(alive) {
+                    bomber.animationDie();
+                    if(countAlive == 70) {
+                        playerArrayList.clear();
+                    }
+                    if(countAlive == 80) {
+                        this.stop();
                     }
                 }
 

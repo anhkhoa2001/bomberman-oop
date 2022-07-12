@@ -46,7 +46,7 @@ public class Bomb extends AnimationSprite {
         this.imageTOP = imageTOP;
         this.imageRIGHT = imageRIGHT;
     }
-    private static final double speedBomb = 40;
+    public static final double speedBomb = 40;
 
 
     public Bomb(double x, double y) {
@@ -109,20 +109,20 @@ public class Bomb extends AnimationSprite {
             countSprite = 2;
             this.setWidth(14.7);
         }
-        else if(countChange <= speedBomb*6.1) {
+        else if(countChange <= speedBomb*6.1*100) {
             setDrawImage(imageExplode);
             setImageAll(imageExplode, imageExplode, imageExplode, imageExplode);
             countSprite = 3;
             this.setWidth(32);
             this.setHeight(32);
         }
-        else if(countChange <= speedBomb*6.2) {
+        else if(countChange <= speedBomb*6.2*100) {
             countSprite = 4;
         }
-        else if(countChange <= speedBomb*6.3) {
+        else if(countChange <= speedBomb*6.3*100) {
             countSprite = 5;
         }
-        else if(countChange <= speedBomb*6.4) {
+        else if(countChange <= speedBomb*6.4*100) {
             countSprite = 6;
         }
     }
